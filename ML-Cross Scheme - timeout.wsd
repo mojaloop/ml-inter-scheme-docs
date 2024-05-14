@@ -1,0 +1,41 @@
+@startuml
+participant "Payer DFSP" as PAYER
+participant "Mojaloop - Sender" as MLS
+participant "Sender Proxy" as SP
+participant "Mojaloop - Regional" as MLHUB
+participant "Receiver Proxy" as RP
+participant "Mojaloop - Receiver" as MLR
+participant "Payee DFSP" as PAYEE
+
+title "Time Out Scenario - Payee Scheme times out"
+
+autonumber 1 
+
+note left of MLHUB: Funds of\nSending Scheme\nare reserved
+MLHUB -> RP: POST /transfers
+RP --> MLHUB: http/202
+RP -> MLR: POST /transfers
+MLR --> RP: http/202
+MLR -> MLR: Block funds of \nProxy
+MLR -> PAYEE: POST /transfers
+PAYEE --> MLR: http/202
+PAYEE -> PAYEE: Validate if account\ncan accept credit\nReserve
+PAYEE -> MLR: PUT /transfers\n(transferstate="Reserved")
+MLR --> PAYEE: http/200
+MLR -> MLR: Hold Posting\nto Central Ledger\nWait for Commit Notification
+MLR -> RP: PUT /transfers\n(transferstate = "Reserved")
+RP --> MLR: http/200
+RP -X MLHUB: PUT /transfers\n(transferstate = "Reserved")
+note left of MLHUB: Time Out
+par Payee Side
+    MLHUB -> RP: /transfers\n(transferstate = "Cancelled")
+    RP --> MLHUB: http/200
+    RP -> MLR: /transfers\n(transferstate = "Cancelled")
+    MLR --> RP: http/200
+    MLR -> MLR: Release blocked funds
+    MLR --> PAYEE: /transfer\n(transferstate = "Cancelled")
+else Payer Side
+    MLHUB -> SP: /transfers\n(transferstate = "Cancelled")
+    note left of SP: Cancellation results\nin Payer funds released
+end
+

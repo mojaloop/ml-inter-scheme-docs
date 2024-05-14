@@ -1,0 +1,57 @@
+@startuml
+participant "Payer DFSP" as PAYER
+participant "Mojaloop - Sender" as MLS
+participant "Sender Proxy" as SP
+participant "Mojaloop - Regional" as MLHUB
+participant "Receiver Proxy" as RP
+participant "Mojaloop - Receiver" as MLR
+participant "Payee DFSP" as PAYEE
+
+title "Regional Hub model"
+
+autonumber 1 
+
+PAYER -> MLS: POST /transfers
+MLS --> PAYER: http/202
+MLS -> MLS: Block funds of Sending DFSP
+MLS -> SP: POST /transfers
+SP --> MLS: http/202
+SP -> MLHUB: POST /transfers
+MLHUB --> SP: http/202
+MLHUB -> MLHUB: Block Funds of\nSending Scheme
+MLHUB -> RP: POST /transfers
+RP --> MLHUB: http/202
+RP -> MLR: POST /transfers
+MLR --> RP: http/202
+MLR -> MLR: Block funds of \nProxy
+MLR -> PAYEE: POST /transfers
+PAYEE --> MLR: http/202
+PAYEE -> PAYEE: Validate if account\ncan accept credit\nReserve
+PAYEE -> MLR: PUT /transfers\n(transferstate="Reserved")
+MLR --> PAYEE: http/200
+MLR -> MLR: Hold Posting\nto Central Ledger\nWait for Commit Notification
+MLR -> RP: PUT /transfers\n(transferstate = "Reserved")
+RP --> MLR: http/200
+RP -> MLHUB: PUT /transfers\n(transferstate = "Reserved")
+MLHUB --> RP: http/200
+MLHUB -> MLHUB: Commit Transfer from\nSender Proxy to\nReceiver Proxy\nGuarantee Settlement
+par Payee Side
+    MLHUB -> RP: PATCH /transfers\n(transferstate=COMMITTED)
+    RP --> MLHUB: http/200
+    RP -> MLR: PATCH /transfers(transferstate=COMMITTED)
+    MLR --> RP: http/200
+    MLR -> MLR: Complete Posting\nRP to Payee
+    note right of MLR: Posting only after\nRegional Hub commits
+    MLR -> PAYEE: PUT /transfers\n(transferstate=COMMITTED)
+    PAYEE --> MLR: http/200
+    note right of PAYEE: Credit customer   
+else Payer Side
+    MLHUB -> SP: PUT /transfers\n(transferstate=COMMITTED)
+    SP --> MLHUB: http/200
+    SP -> MLS: PUT /transfers\n(transfersstate=COMMITTED)
+    MLS --> SP: http/200
+    MLS -> PAYER: PUT /transfers\n(transferstate=COMMITTED)
+    PAYER --> MLS: http/200
+    note left of PAYER: Payer gets\nsuccess
+end
+
