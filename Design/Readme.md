@@ -15,10 +15,10 @@ This design make the following assumptions
 ## General Patterns
 There are certain general patterns that emerge
 ### Happy Path Patterns
-![Happy Path Patterns](Proxy%20pattern%20-%20happy%20path.png)
+![Happy Path Patterns](./Proxy%20pattern%20-%20Happy%20path.png)
 
 ### Error Patterns
-![Error Patterns](Proxy%20pattern%20-%20Unhappy%20path.png)
+![Error Patterns](./Proxy%20pattern%20-%20Unhappy%20path.png)
 
 ## Detailed Designs
 1. [Discovery - On Demand Implementation](./Discovery.md)
