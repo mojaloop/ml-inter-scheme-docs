@@ -26,9 +26,6 @@ There are certain general patterns that emerge
 ## Admin API - defining Proxy Participants
 ![Admin API](./SettingUpProxys.png)
 
-## Get Services
-![Services](./Proxy%20pattern%20-%20services.png)
-
 ## Clearing Accounts for Inter-scheme FX transfers
 ![Clearing Accounts](./InterschemeAccounts-Clearing.png)
 
