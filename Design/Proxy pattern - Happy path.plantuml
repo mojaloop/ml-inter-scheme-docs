@@ -25,6 +25,7 @@ header
 body
  {ID: 1234}
 end note
+schemeA-->>payerDFSP: http 202 response
 schemeA -> pc_A: Destination not in scheme:\n payeeDFSP has a proxy mapped\n need to send to 'Proxy AB'
 schemeA ->> xnp: POST /xxx
 xnp->xnp: Add header
@@ -40,12 +41,14 @@ schemeB -->> xnp: 202 OK
 xnp -->> schemeA: 202 OK
 
 schemeB ->> payeeDFSP: POST /xxx
+payeeDFSP-->>schemeB: http 202 response
 
 == GET ==
 payerDFSP -> schemeA: GET /xxx/{ID} \nwithout destination
 note left
   source: payerDFSP
 end note
+schemeA-->>payerDFSP: http 202 response
 
 schemeA->schemeA: lookup if ID result and triggers put
 
@@ -54,6 +57,7 @@ note left
   source: payerDFSP
   destination: payeeDFSP
 end note
+schemeA-->>payerDFSP: http 202 response
 
 schemeA -> pc_A: Destination not in scheme:\n payeeDFSP has a proxy mapped\n need to send to 'Proxy AB'
 schemeA ->> xnp: GET /xxx
@@ -69,6 +73,7 @@ schemeB -->> xnp: 202 OK
 xnp -->> schemeA: 202 OK
 
 schemeB ->> payeeDFSP: GET /xxx
+payeeDFSP-->>schemeB: http 202 response
 
 
 
@@ -80,6 +85,8 @@ note right
     source: payeeDFSP
     destination: payerDFSP
 end note
+schemeB-->>payeeDFSP: http 200 response
+
 schemeB -> pc_B: Destination not in scheme:\n payerDFSP has a proxy mapped\n need to send to 'Proxy AB'
 schemeB -> xnp: PUT /xxx
 xnp->xnp: Add header
@@ -94,5 +101,6 @@ schemeA -->> xnp: 200 OK
 xnp -->> schemeB: 200 OK
 
 schemeA -> payerDFSP: PUT /xxx
+payerDFSP-->>schemeA: http 200 response
 
 @enduml
