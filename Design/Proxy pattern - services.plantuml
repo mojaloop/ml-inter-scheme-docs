@@ -95,7 +95,7 @@ loop for All Participants in Scheme B
   loop for All Participant in Scheme A
     services_A -> payerDFSP: **DELETE** /services/FXP
     payerDFSP -->> services_A: 200 OK
-    payerDFSP->payerDFSP: Validated JWS from FXP
+    payerDFSP->payerDFSP: Validated JWS from Scheme B
     payerDFSP->payerDFSP: Remove service from local store of services
   end loop
 end loop
