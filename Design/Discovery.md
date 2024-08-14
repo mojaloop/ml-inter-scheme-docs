@@ -6,7 +6,7 @@ The discovery flows are summarized as follows:
 
 ## On Demand Discovery using local oracles
 - Scheme uses Oracles to map local identifiers to participants of the scheme
-- Identifiers for other schemes are discovered via a depth first search, but asking all participants. Proxy participant then forward the request to the connected scheme
+- Identifiers for other schemes are discovered via a parallel search, but asking all participants. Proxy participant then forward the request to the connected scheme
 - This diagram shows two connected schemes, but this design work for any number of connected schemes.
 
 ![Proxy pattern - On Demand Discovery with Oracles](Proxy%20pattern%20-%20On%20Demand%20Discovery%20-%20using%20Oracles.png)
