@@ -12,7 +12,7 @@ participant "other Proxies" as dfspsA
 participant "Proxy AB" as xnp
 box "Scheme B"
     participant "ALS\nScheme B" as ALS_B
-    participant "Oracle\nScheme A" as Oracle_B
+    participant "Oracle\nScheme B" as Oracle_B
     participant "Proxy Cache\nScheme B" as pc_B    
 end box
 participant "Payee DFS" as payeeDFSP
